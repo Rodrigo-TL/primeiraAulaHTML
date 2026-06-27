@@ -1,8 +1,8 @@
 function soma() {
-    let primeiroNumero = Number(document.getElementById("primeiro-numero").value);
-    let segundoNumero = Number(document.getElementById("segundo-numero").value);
+    let primeiroNumero = document.getElementById("primeiro-numero").value;
+    let segundoNumero = document.getElementById("segundo-numero").value;
 
-    let resultado = primeiroNumero + segundoNumero;
+    let resultado = Number(primeiroNumero) + Number(segundoNumero);
 
     document.getElementById("resultado").innerText = resultado;
 
@@ -10,10 +10,10 @@ function soma() {
 }
 
 function subtracao() {
-    let primeiroNumero = Number(document.getElementById("primeiro-numero").value);
-    let segundoNumero = Number(document.getElementById("segundo-numero").value);
+    let primeiroNumero = document.getElementById("primeiro-numero").value;
+    let segundoNumero = document.getElementById("segundo-numero").value;
 
-    let resultado = primeiroNumero - segundoNumero;
+    let resultado = Number(primeiroNumero) - Number(segundoNumero);
 
     document.getElementById("resultado").innerText = resultado;
 
@@ -21,10 +21,10 @@ function subtracao() {
 }
 
 function multiplicacao() {
-    let primeiroNumero = Number(document.getElementById("primeiro-numero").value);
-    let segundoNumero = Number(document.getElementById("segundo-numero").value);
+    let primeiroNumero = document.getElementById("primeiro-numero").value;
+    let segundoNumero = document.getElementById("segundo-numero").value;
 
-    let resultado = primeiroNumero * segundoNumero;
+    let resultado = Number(primeiroNumero) * Number(segundoNumero);
 
     document.getElementById("resultado").innerText = resultado;
 
@@ -32,10 +32,10 @@ function multiplicacao() {
 }
 
 function divisao() {
-    let primeiroNumero = Number(document.getElementById("primeiro-numero").value);
-    let segundoNumero = Number(document.getElementById("segundo-numero").value);
+    let primeiroNumero = document.getElementById("primeiro-numero").value;
+    let segundoNumero = document.getElementById("segundo-numero").value;
 
-    let resultado = primeiroNumero / segundoNumero;
+    let resultado = Number(primeiroNumero) / Number(segundoNumero);
 
     document.getElementById("resultado").innerText = resultado;
 
@@ -44,7 +44,7 @@ function divisao() {
 
 function salvarHistorico(nomeDaFuncao, num1, num2, resultado) {
     console.log("Função: " + nomeDaFuncao);
-    console.log("Primeiro numero: " + num1 + ", Segundo numero: " + num2);
+    console.log("Primeiro numero: " + num1 + ", SegundoNumero: " + num2);
     console.log("Resultado: " + resultado);
     console.log("--------------------------------------");
 
@@ -61,15 +61,50 @@ function salvarHistorico(nomeDaFuncao, num1, num2, resultado) {
     localStorage.setItem("historicoCalculos", JSON.stringify(historicoLocal));
 }
 
-function apagarLocalStorage(){
+function apagarLocalStorage() {
 
     let confirmaApagar = window.confirm("Você deseja apagar seu histórico?")
-    
-    if(confirmaApagar){
+
+    if (confirmaApagar) {
         localStorage.clear();
     }
 }
 
+function calculoImposto() {
+    let valorInicial = document.getElementById("valor-inicial").value;
+    let valorComImposto;
+
+    let valorNum = Number(valorInicial);
+
+    if(valorNum <= 50) {
+        valorComImposto = valorNum + (valorNum * 0.20);
+    } else {
+        let primeiraTaxa = valorNum + (valorNum * 0.20);
+        valorComImposto = primeiraTaxa + (primeiraTaxa * 0.90);
+    }
+
+    valorComImposto = Number(valorComImposto);
+
+    salvarHistoricoImposto(valorInicial, valorComImposto);
+
+    document.getElementById("resultado-imposto").innerText = valorComImposto;
+}
+
+function salvarHistoricoImposto(valorInicial, valorComImposto) {
+    console.log("Valor inicial: " + valorInicial);
+    console.log("valor com imposto: " + valorComImposto);
+    console.log("--------------------------------------");
+
+    let operacao = {
+        valorInicial,
+        valorComImposto
+    };
+
+    let historicoLocal = JSON.parse(localStorage.getItem("historicoImposto")) || [];
+    historicoLocal.push(operacao);
+
+    localStorage.setItem("historicoImposto", JSON.stringify(historicoLocal));
+}
 /*
     Nova função de calculo de imposto de importação
 
@@ -84,41 +119,3 @@ function apagarLocalStorage(){
     Ex: histórico de calculos matemáticos, e histórico de conversões
 
  */
-
-function calcularImposto() {
-    let valorProduto = Number(document.getElementById("valor-produto").value);
-
-    let resultado;
-
-    if (valorProduto < 50) {
-        resultado = valorProduto + (valorProduto * 0.20);
-    } else {
-        resultado = valorProduto + (valorProduto * 0.20);
-        resultado = resultado + (resultado * 0.90);
-        resultado = resultado - valorProduto; // Subtrai o valor do produto para obter apenas o imposto
-        resultado = resultado.toFixed(2);
-    }
-
-    document.getElementById("resultado-imposto").innerText = resultado;
-    document.getElementById("valor-produto").value = ""; // Limpa o campo de valor do produto
-    
-
-    salvarHistoricoImposto(valorProduto, resultado);
-}
-
-function salvarHistoricoImposto(valorProduto, resultado) {
-    console.log("Valor do produto: " + valorProduto);
-    console.log("Resultado do imposto: " + resultado);
-    console.log("--------------------------------------");
-
-    let operacao = {
-        tipo: "Imposto de importação",
-        valorProduto: valorProduto,
-        resultadoImposto: resultado
-    };
-
-    let historicoLocal = JSON.parse(localStorage.getItem("historicoImpostos")) || [];
-    historicoLocal.push(operacao);
-
-    localStorage.setItem("historicoImpostos", JSON.stringify(historicoLocal));
-}
